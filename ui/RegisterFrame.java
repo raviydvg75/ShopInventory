@@ -1,15 +1,16 @@
 package ui;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 public class RegisterFrame extends JFrame {
+
     private static String shopName;
     private static String merchantName;
     private static String panNumber;
     private static String location;
     private static String password;
-
 
     private JTextField shopNameField;
     private JTextField merchantNameField;
@@ -33,6 +34,9 @@ public class RegisterFrame extends JFrame {
         return panNumber;
     }
 
+    public static String getLOCATION() {
+        return location;
+    }
 
     public static String getPassword() {
         return password;
@@ -40,73 +44,106 @@ public class RegisterFrame extends JFrame {
 
     public RegisterFrame() {
 
+        Color nepalRed = new Color(220, 20, 60);
+        Color nepalBlue = new Color(0, 56, 147);
+        Color lightBg = new Color(245, 247, 250);
+
         setTitle("Mero Pasal - Register");
-        setSize(650, 650);
+        setSize(700, 750);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(null);
-        panel.setBackground(new Color(35, 35, 35));
+        JPanel panel = new JPanel(null);
+        panel.setBackground(lightBg);
 
-        // Heading
-        JLabel heading = new JLabel("Let's make shopping digital and secure!");
-        heading.setForeground(Color.WHITE);
-        heading.setFont(new Font("Arial", Font.BOLD, 22));
-        heading.setBounds(90, 30, 500, 30);
+        JPanel header = new JPanel(null);
+        header.setBackground(nepalBlue);
+        header.setBounds(0, 0, 700, 120);
 
-        // Shop Name
+        JLabel title = new JLabel("MERO PASAL");
+        title.setForeground(Color.WHITE);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        title.setHorizontalAlignment(JLabel.CENTER);
+        title.setBounds(100, 15, 500, 40);
+
+        JLabel subtitle = new JLabel("Merchant Registration");
+        subtitle.setForeground(Color.WHITE);
+        subtitle.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        subtitle.setHorizontalAlignment(JLabel.CENTER);
+        subtitle.setBounds(100, 55, 500, 30);
+
+        header.add(title);
+        header.add(subtitle);
+
+        JPanel accentLine = new JPanel();
+        accentLine.setBackground(nepalRed);
+        accentLine.setBounds(0, 120, 700, 5);
+
+        Border border = BorderFactory.createLineBorder(nepalBlue, 2);
+
         JLabel lblShop = new JLabel("Shop Name");
-        lblShop.setForeground(Color.WHITE);
-        lblShop.setBounds(70, 100, 150, 25);
+        lblShop.setForeground(nepalBlue);
+        lblShop.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblShop.setBounds(100, 150, 150, 25);
 
         shopNameField = new JTextField();
-        shopNameField.setBounds(70, 130, 500, 35);
+        shopNameField.setBounds(100, 180, 500, 40);
+        shopNameField.setBorder(border);
 
-        // Merchant Name
         JLabel lblMerchant = new JLabel("Merchant Name");
-        lblMerchant.setForeground(Color.WHITE);
-        lblMerchant.setBounds(70, 180, 150, 25);
+        lblMerchant.setForeground(nepalBlue);
+        lblMerchant.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblMerchant.setBounds(100, 240, 150, 25);
 
         merchantNameField = new JTextField();
-        merchantNameField.setBounds(70, 210, 500, 35);
+        merchantNameField.setBounds(100, 270, 500, 40);
+        merchantNameField.setBorder(border);
 
-        // PAN Number
         JLabel lblPan = new JLabel("PAN Number");
-        lblPan.setForeground(Color.WHITE);
-        lblPan.setBounds(70, 260, 150, 25);
+        lblPan.setForeground(nepalBlue);
+        lblPan.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblPan.setBounds(100, 330, 150, 25);
 
         panField = new JTextField();
-        panField.setBounds(70, 290, 500, 35);
+        panField.setBounds(100, 360, 500, 40);
+        panField.setBorder(border);
 
-        // Location
         JLabel lblLocation = new JLabel("Location");
-        lblLocation.setForeground(Color.WHITE);
-        lblLocation.setBounds(70, 340, 150, 25);
+        lblLocation.setForeground(nepalBlue);
+        lblLocation.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblLocation.setBounds(100, 420, 150, 25);
 
         locationField = new JTextField();
-        locationField.setBounds(70, 370, 500, 35);
+        locationField.setBounds(100, 450, 500, 40);
+        locationField.setBorder(border);
 
-        // Password
         JLabel lblPassword = new JLabel("Password");
-        lblPassword.setForeground(Color.WHITE);
-        lblPassword.setBounds(70, 420, 150, 25);
+        lblPassword.setForeground(nepalBlue);
+        lblPassword.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblPassword.setBounds(100, 510, 150, 25);
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(70, 450, 240, 35);
+        passwordField.setBounds(100, 540, 240, 40);
+        passwordField.setBorder(border);
 
-        // Confirm Password
-        JLabel lblConfirmPass = new JLabel("Confirm Password");
-        lblConfirmPass.setForeground(Color.WHITE);
-        lblConfirmPass.setBounds(330, 420, 150, 25);
+        JLabel lblConfirm = new JLabel("Confirm Password");
+        lblConfirm.setForeground(nepalBlue);
+        lblConfirm.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        lblConfirm.setBounds(360, 510, 150, 25);
 
         confirmPasswordField = new JPasswordField();
-        confirmPasswordField.setBounds(330, 450, 240, 35);
+        confirmPasswordField.setBounds(360, 540, 240, 40);
+        confirmPasswordField.setBorder(border);
 
-        // Register Button
         registerButton = new JButton("Register");
-        registerButton.setBounds(220, 530, 180, 45);
+        registerButton.setBounds(200, 620, 300, 45);
+        registerButton.setBackground(nepalRed);
+        registerButton.setForeground(Color.WHITE);
+        registerButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        registerButton.setFocusPainted(false);
+        registerButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
         registerButton.addActionListener(e -> {
 
             String shop = shopNameField.getText().trim();
@@ -116,7 +153,6 @@ public class RegisterFrame extends JFrame {
             String pass = String.valueOf(passwordField.getPassword());
             String confirm = String.valueOf(confirmPasswordField.getPassword());
 
-            // Check empty fields
             if (shop.isEmpty() || merchant.isEmpty() || pan.isEmpty()
                     || loc.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
 
@@ -129,7 +165,6 @@ public class RegisterFrame extends JFrame {
                 return;
             }
 
-            // Check password match
             if (!pass.equals(confirm)) {
 
                 JOptionPane.showMessageDialog(
@@ -141,7 +176,6 @@ public class RegisterFrame extends JFrame {
                 return;
             }
 
-            // Store data in class variables
             shopName = shop;
             merchantName = merchant;
             panNumber = pan;
@@ -155,10 +189,12 @@ public class RegisterFrame extends JFrame {
                     JOptionPane.INFORMATION_MESSAGE
             );
 
+            new LoginFrame();
+            dispose();
         });
 
-
-        panel.add(heading);
+        panel.add(header);
+        panel.add(accentLine);
 
         panel.add(lblShop);
         panel.add(shopNameField);
@@ -175,14 +211,14 @@ public class RegisterFrame extends JFrame {
         panel.add(lblPassword);
         panel.add(passwordField);
 
-        panel.add(lblConfirmPass);
+        panel.add(lblConfirm);
         panel.add(confirmPasswordField);
 
         panel.add(registerButton);
 
         add(panel);
-
         setVisible(true);
     }
 
 }
+
