@@ -6,11 +6,11 @@ import java.awt.*;
 
 public class RegisterFrame extends JFrame {
 
-    private static String shopName;
-    private static String merchantName;
-    private static String panNumber;
-    private static String location;
-    private static String password;
+    public static String shopName;
+    public static String merchantName;
+    public static String panNumber;
+    public  static String location;
+    public static String password;
 
     private JTextField shopNameField;
     private JTextField merchantNameField;
