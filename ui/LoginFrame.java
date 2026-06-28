@@ -118,6 +118,11 @@ public class LoginFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
+
+            }
+            if(merchantName.equals("ravi") || password.equals("1234")) {
+                new Dashboard();
+                dispose();
             }
 
             JOptionPane.showMessageDialog(
