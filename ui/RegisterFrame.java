@@ -1,16 +1,13 @@
 package ui;
 
+import dao.UserDAO;
+import model.User;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 
 public class RegisterFrame extends JFrame {
-
-    public static String shopName;
-    public static String merchantName;
-    public static String panNumber;
-    public  static String location;
-    public static String password;
 
     private JTextField shopNameField;
     private JTextField merchantNameField;
@@ -21,26 +18,6 @@ public class RegisterFrame extends JFrame {
     private JPasswordField confirmPasswordField;
 
     private JButton registerButton;
-
-    public static String getShopName() {
-        return shopName;
-    }
-
-    public static String getMerchantName() {
-        return merchantName;
-    }
-
-    public static String getPanNumber() {
-        return panNumber;
-    }
-
-    public static String getLOCATION() {
-        return location;
-    }
-
-    public static String getPassword() {
-        return password;
-    }
 
     public RegisterFrame() {
 
@@ -150,49 +127,86 @@ public class RegisterFrame extends JFrame {
             String merchant = merchantNameField.getText().trim();
             String pan = panField.getText().trim();
             String loc = locationField.getText().trim();
-            String pass = String.valueOf(passwordField.getPassword());
-            String confirm = String.valueOf(confirmPasswordField.getPassword());
+            String pass = new String(passwordField.getPassword());
+            String confirm = new String(confirmPasswordField.getPassword());
 
+            // Check for empty fields
             if (shop.isEmpty() || merchant.isEmpty() || pan.isEmpty()
                     || loc.isEmpty() || pass.isEmpty() || confirm.isEmpty()) {
 
                 JOptionPane.showMessageDialog(
                         this,
-                        "Please fill all fields.",
-                        "Error",
+                        "Please fill all the fields.",
+                        "Registration Error",
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
             }
 
+            // Check password confirmation
             if (!pass.equals(confirm)) {
 
                 JOptionPane.showMessageDialog(
                         this,
                         "Passwords do not match.",
-                        "Error",
+                        "Registration Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+
+                passwordField.setText("");
+                confirmPasswordField.setText("");
+                return;
+            }
+
+            // Password length validation
+            if (pass.length() < 6) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Password must be at least 6 characters long.",
+                        "Registration Error",
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
             }
 
-            shopName = shop;
-            merchantName = merchant;
-            panNumber = pan;
-            location = loc;
-            password = pass;
+            // Create User object
+            User user = new User();
+            user.setShopName(shop);
+            user.setMerchantName(merchant);
+            user.setPanNumber(pan);
+            user.setLocation(loc);
+            user.setPassword(pass);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Registration Successful!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            // Save user
+            UserDAO dao = new UserDAO();
 
-            new LoginFrame();
-            dispose();
+            if (dao.registerUser(user)) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Registration Successful!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                dispose();
+                new LoginFrame();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Registration Failed!\nMerchant Name or PAN Number may already exist.",
+                        "Database Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
+
+                passwordField.setText("");
+                confirmPasswordField.setText("");
+            }
+
         });
-
         panel.add(header);
         panel.add(accentLine);
 

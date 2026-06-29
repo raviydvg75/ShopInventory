@@ -1,4 +1,5 @@
 package ui;
+import dao.UserDAO;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -118,18 +119,33 @@ public class LoginFrame extends JFrame {
                         JOptionPane.ERROR_MESSAGE
                 );
                 return;
-
             }
-            if(merchantName.equals("ravi") || password.equals("1234")) {
+
+            UserDAO userDAO = new UserDAO();
+
+            if (userDAO.loginUser(merchantName, password)) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Login Successful!"
+                );
+
                 new Dashboard();
                 dispose();
+
+            } else {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Invalid Merchant Name or Password.",
+                        "Login Failed",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Welcome, " + merchantName + "!"
-            );
         });
+
+
 
         registerButton.addActionListener(e -> {
             new RegisterFrame();
