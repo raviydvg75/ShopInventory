@@ -1,6 +1,5 @@
 package database;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -8,7 +7,7 @@ public class DBConnection {
 
     private static final String URL = "jdbc:mysql://localhost:3306/meropasal";
     private static final String USER = "meropasal";
-    private static final String PASSWORD = ""; //try "YourPassword123!" for a demo
+    private static final String PASSWORD = "YourPassword123!";
 
     public static Connection getConnection() {
         try {
