@@ -35,6 +35,14 @@
 
 ![Dashboard](screenshots/dashboard.png)
 
+## Bill
+
+![Bill](screenshots/bill.png)
+
+## Receipt
+
+![Receipt](screenshots/receipt.png)
+
 ### Products
 
 >'Yet to be added'
