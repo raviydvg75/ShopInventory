@@ -5,6 +5,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class Dashboard extends JFrame {
+    private JLabel totalLabel;
+    private double grandTotal = 0.0;
+
 
     // Nepal Flag Colors
     private final Color NEPAL_BLUE = new Color(0, 56, 147);
@@ -164,23 +167,27 @@ public class Dashboard extends JFrame {
 
         setVisible(true);
     }
+
     private void showPage(String pageName) {
 
-        // Remove old contents
         centerPanel.removeAll();
         centerPanel.setLayout(new BorderLayout());
         centerPanel.setBackground(Color.WHITE);
 
-        // Page Heading
+        if (pageName.equals("Add Transactions")) {
+
+            centerPanel.add(new TransactionPanel(), BorderLayout.CENTER);
+
+            centerPanel.revalidate();
+            centerPanel.repaint();
+            return;
+        }
+
         JLabel heading = new JLabel(pageName, SwingConstants.CENTER);
         heading.setFont(new Font("Arial", Font.BOLD, 32));
         heading.setForeground(NEPAL_BLUE);
-        heading.setBorder(new EmptyBorder(30, 0, 20, 0));
 
-        // Description
         JLabel description = new JLabel("", SwingConstants.CENTER);
-        description.setFont(new Font("Arial", Font.PLAIN, 18));
-        description.setForeground(Color.DARK_GRAY);
 
         switch (pageName) {
 
@@ -188,28 +195,24 @@ public class Dashboard extends JFrame {
                 description.setText("Welcome to Mero Pasal Dashboard.");
                 break;
 
-            case "Add Transactions":
-                description.setText("Record sales and purchase transactions.");
-                break;
-
             case "Products":
                 description.setText("Manage your product inventory.");
                 break;
 
             case "Sales":
-                description.setText("View daily, weekly and monthly sales.");
+                description.setText("View daily sales.");
                 break;
 
             case "Customers":
-                description.setText("Manage customer information.");
+                description.setText("Manage customers.");
                 break;
 
             case "Suppliers":
-                description.setText("Manage supplier details.");
+                description.setText("Manage suppliers.");
                 break;
 
             case "Reports":
-                description.setText("Generate business reports.");
+                description.setText("Generate reports.");
                 break;
 
             case "Settings":
@@ -217,11 +220,8 @@ public class Dashboard extends JFrame {
                 break;
 
             case "Help":
-                description.setText("Need help? Find documentation here.");
+                description.setText("Help and support.");
                 break;
-
-            default:
-                description.setText("Page not found.");
         }
 
         JPanel content = new JPanel();
@@ -240,6 +240,11 @@ public class Dashboard extends JFrame {
 
         centerPanel.revalidate();
         centerPanel.repaint();
+    }
+    public static void main(String[] args)
+    {
+        new Dashboard();
+
     }
 
 }
