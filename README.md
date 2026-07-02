@@ -7,7 +7,10 @@
 ## ✨ Features
 
 * 📊 Interactive Dashboard
+* 🔐 Secure User Authentication
+* 🔒 BCrypt Password Hashing
 * 💳 Transaction Management
+* 🧾 Automatic Bill Calculation
 * 📦 Product Management
 * 💰 Sales Management
 * 👥 Customer Management
@@ -15,11 +18,9 @@
 * 📑 Reports
 * ⚙️ Settings
 * ❓ Help Section
+* 🗄️ MySQL Database Integration
 * 🎨 Modern Nepal-themed UI (Red & Blue)
 
----
-
-## 🖥️ Screenshots
 
 ## 📸 Screenshots
 
@@ -42,23 +43,25 @@
 ## Receipt
 
 ![Receipt](screenshots/receipt.png)
+### Database
+
+![Database](screenshots/db.png)
 
 ### Products
 
 >'Yet to be added'
 
 ---
-
-## 🛠️ Technologies Used
-
+ ### Technology Used
 * Java
 * Java Swing
+* JDBC
+* BCrypt (jBCrypt)
 * IntelliJ IDEA
 * Object-Oriented Programming (OOP)
-* MYSQL
+* MySQL
 * DBeaver
-
----
+* Git & GitHub
 
 ## 📂 Project Structure
 
@@ -100,32 +103,31 @@ git clone https://github.com/raviydvg75/MeroPasal.git
 4. Build and run the project.
 
 ---
-
-## 📌 Current Progress
+### Current Progress
 
 * ✅ Login Interface
 * ✅ Registration Interface
+* ✅ User Authentication
+* ✅ BCrypt Password Hashing
+* ✅ MySQL Database Integration
 * ✅ Responsive Dashboard Layout
 * ✅ Sidebar Navigation
 * ✅ Image-Based Icons
-* 🔄 Event Handling
-* 🔄 Transaction Module
+* ✅ Event Handling
+* ✅ Transaction Module UI
+* ✅ Automatic Bill Calculation
+* 🔄 Receipt Generation
 * 🔄 Product Module
 * 🔄 Sales Module
 * 🔄 Reports Module
 
----
-
 ## 🎯 Future Enhancements
 
-* Database Integration (MySQL)
-* User Authentication
 * Inventory Management
-* Billing & Invoice Generation
+* PDF Receipt Generation
 * Sales Analytics
 * Search & Filter
 * Dark Mode
-* PDF Report Export
 * Backup & Restore
 * Multi-user Support
 

@@ -2,6 +2,7 @@ package dao;
 
 import database.DBConnection;
 import model.User;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +23,10 @@ public class UserDAO{
             ps.setString(2, user.getMerchantName());
             ps.setString(3, user.getPanNumber());
             ps.setString(4, user.getLocation());
-            ps.setString(5, user.getPassword());
+
+            String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+
+            ps.setString(5, hashedPassword);
 
             return ps.executeUpdate() > 0;
 
@@ -35,17 +39,28 @@ public class UserDAO{
     // Login User
     public boolean loginUser(String merchantName, String password) {
 
-        String sql = "SELECT * FROM users WHERE merchant_name = ? AND password = ?";
+        String sql = "SELECT * FROM users WHERE merchant_name = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, merchantName);
-            ps.setString(2, password);
+
+            ps.setString(1, merchantName);
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
+
+                if (rs.next()) {
+
+                    String storedHash = rs.getString("password");
+
+                    return BCrypt.checkpw(password, storedHash);
+
+                }
+
+                return false;
             }
+
 
         } catch (SQLException e) {
             System.out.println("Login Error: " + e.getMessage());
