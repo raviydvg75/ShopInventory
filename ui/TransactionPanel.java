@@ -1,5 +1,9 @@
 package ui;
 
+import dao.TransactionDAO;
+import model.Transaction;
+import model.TransactionItem;
+
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
@@ -24,6 +28,7 @@ public class TransactionPanel extends JPanel {
     private DefaultTableModel model;
 
     private JLabel totalLabel;
+    private double grandTotal = 0;
 
     public TransactionPanel() {
 
@@ -108,7 +113,7 @@ public class TransactionPanel extends JPanel {
         clearButton.addActionListener(e -> clearBill());
 
         // Generate Receipt
-        receiptButton.addActionListener(e -> generateReceipt());
+        receiptButton.addActionListener(e -> completeTransaction());
 
         // Change products when category changes
         categoryBox.addActionListener(e -> loadProducts());
@@ -117,6 +122,67 @@ public class TransactionPanel extends JPanel {
     // ==========================
     // Input Panel
     // ==========================
+    private void completeTransaction() {
+
+        if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No items added."
+            );
+            return;
+        }
+
+        Transaction transaction = new Transaction();
+
+        transaction.setGrandTotal(grandTotal);
+
+        TransactionDAO dao = new TransactionDAO();
+
+        int transactionId = dao.saveTransaction(transaction);
+
+        if (transactionId == -1) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to save transaction."
+            );
+            return;
+        }
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+
+            TransactionItem item = new TransactionItem();
+
+            item.setTransactionId(transactionId);
+
+            item.setProductName(model.getValueAt(i,0).toString());
+
+            item.setQuantity(
+                    Integer.parseInt(model.getValueAt(i,1).toString()));
+
+            item.setUnitPrice(Double.parseDouble(model.getValueAt(i,2).toString()));
+
+            item.setTotal(
+                    Double.parseDouble(model.getValueAt(i,3).toString()));
+
+            dao.saveTransactionItem(
+                    item.getTransactionId(),
+                    item.getProductName(),
+                    item.getQuantity(),
+                    item.getUnitPrice(),   // or getUnitPrice() if that's your getter
+                    item.getTotal()
+            );
+        }
+
+        generateReceipt();
+
+        clearBill();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Transaction Saved Successfully!"
+        );
+    }
     private JPanel createInputPanel() {
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -226,7 +292,7 @@ public class TransactionPanel extends JPanel {
     }
     private void calculateGrandTotal() {
 
-        double grandTotal = 0.0;
+        grandTotal = 0.0;
 
         // Loop through every row in the table
         for (int i = 0; i < model.getRowCount(); i++) {
