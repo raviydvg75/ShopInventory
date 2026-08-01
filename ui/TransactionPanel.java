@@ -67,9 +67,14 @@ public class TransactionPanel extends JPanel {
 
         add(body, BorderLayout.CENTER);
     }
+
     private void loadProducts() {
 
         productBox.removeAllItems();
+
+        if (categoryBox.getSelectedItem() == null) {
+            return;
+        }
 
         String category = categoryBox.getSelectedItem().toString();
 
@@ -101,50 +106,49 @@ public class TransactionPanel extends JPanel {
                 break;
         }
     }
+
     private void registerEvents() {
 
         // Add Item
         addButton.addActionListener(e -> addItem());
 
         // Remove Selected Item
-       // removeButton.addActionListener(e -> removeSelectedItem());
+        removeButton.addActionListener(e -> removeSelectedItem());
 
         // Clear Bill
         clearButton.addActionListener(e -> clearBill());
 
-        // Generate Receipt
+        // Generate Receipt & Complete Transaction
         receiptButton.addActionListener(e -> completeTransaction());
 
         // Change products when category changes
         categoryBox.addActionListener(e -> loadProducts());
     }
 
-    // ==========================
-    // Input Panel
-    // ==========================
     private void completeTransaction() {
 
         if (model.getRowCount() == 0) {
             JOptionPane.showMessageDialog(
                     this,
-                    "No items added."
+                    "No items added.",
+                    "Empty Bill",
+                    JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
         Transaction transaction = new Transaction();
-
         transaction.setGrandTotal(grandTotal);
 
         TransactionDAO dao = new TransactionDAO();
-
         int transactionId = dao.saveTransaction(transaction);
 
         if (transactionId == -1) {
-
             JOptionPane.showMessageDialog(
                     this,
-                    "Failed to save transaction."
+                    "Failed to save transaction to database.",
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
             );
             return;
         }
@@ -154,35 +158,29 @@ public class TransactionPanel extends JPanel {
             TransactionItem item = new TransactionItem();
 
             item.setTransactionId(transactionId);
-
-            item.setProductName(model.getValueAt(i,0).toString());
-
-            item.setQuantity(
-                    Integer.parseInt(model.getValueAt(i,1).toString()));
-
-            item.setUnitPrice(Double.parseDouble(model.getValueAt(i,2).toString()));
-
-            item.setTotal(
-                    Double.parseDouble(model.getValueAt(i,3).toString()));
+            item.setProductName(model.getValueAt(i, 0).toString());
+            item.setQuantity(Integer.parseInt(model.getValueAt(i, 1).toString()));
+            item.setUnitPrice(Double.parseDouble(model.getValueAt(i, 2).toString()));
+            item.setTotal(Double.parseDouble(model.getValueAt(i, 3).toString()));
 
             dao.saveTransactionItem(
                     item.getTransactionId(),
                     item.getProductName(),
                     item.getQuantity(),
-                    item.getUnitPrice(),   // or getUnitPrice() if that's your getter
+                    item.getUnitPrice(),
                     item.getTotal()
             );
         }
 
         generateReceipt();
-
         clearBill();
 
         JOptionPane.showMessageDialog(
                 this,
-                "Transaction Saved Successfully!"
+                "Transaction #" + transactionId + " saved successfully!"
         );
     }
+
     private JPanel createInputPanel() {
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -190,7 +188,7 @@ public class TransactionPanel extends JPanel {
         panel.setBorder(new TitledBorder("Transaction Details"));
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10,10,10,10);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Category
@@ -205,7 +203,7 @@ public class TransactionPanel extends JPanel {
         categoryBox.addItem("Bakery");
         categoryBox.addItem("Dairy");
 
-        categoryBox.setPreferredSize(new Dimension(180,35));
+        categoryBox.setPreferredSize(new Dimension(180, 35));
         panel.add(categoryBox, gbc);
 
         // Product
@@ -214,6 +212,7 @@ public class TransactionPanel extends JPanel {
 
         gbc.gridx = 3;
         productBox = new JComboBox<>();
+        productBox.setPreferredSize(new Dimension(180, 35));
         panel.add(productBox, gbc);
         loadProducts();
 
@@ -223,8 +222,8 @@ public class TransactionPanel extends JPanel {
         panel.add(new JLabel("Quantity"), gbc);
 
         gbc.gridx = 1;
-        qtySpinner = new JSpinner(new SpinnerNumberModel(1,1,1000,1));
-        qtySpinner.setPreferredSize(new Dimension(180,35));
+        qtySpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+        qtySpinner.setPreferredSize(new Dimension(180, 35));
         panel.add(qtySpinner, gbc);
 
         // Price
@@ -233,7 +232,7 @@ public class TransactionPanel extends JPanel {
 
         gbc.gridx = 3;
         priceField = new JTextField("100");
-        priceField.setPreferredSize(new Dimension(180,35));
+        priceField.setPreferredSize(new Dimension(180, 35));
         panel.add(priceField, gbc);
 
         // Buttons
@@ -243,8 +242,8 @@ public class TransactionPanel extends JPanel {
         addButton = new JButton("Add Item");
         removeButton = new JButton("Remove Selected");
 
-        addButton.setPreferredSize(new Dimension(170,40));
-        removeButton.setPreferredSize(new Dimension(170,40));
+        addButton.setPreferredSize(new Dimension(170, 40));
+        removeButton.setPreferredSize(new Dimension(170, 40));
 
         addButton.setBackground(BLUE);
         addButton.setForeground(Color.WHITE);
@@ -264,9 +263,6 @@ public class TransactionPanel extends JPanel {
         return panel;
     }
 
-    // ==========================
-    // Table Panel
-    // ==========================
     private JScrollPane createTablePanel() {
 
         String[] columns = {
@@ -276,13 +272,13 @@ public class TransactionPanel extends JPanel {
                 "Total"
         };
 
-        model = new DefaultTableModel(columns,0);
+        model = new DefaultTableModel(columns, 0);
 
         table = new JTable(model);
 
         table.setRowHeight(35);
-        table.setFont(new Font("Arial",Font.PLAIN,15));
-        table.getTableHeader().setFont(new Font("Arial",Font.BOLD,15));
+        table.setFont(new Font("Arial", Font.PLAIN, 15));
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 15));
         table.getTableHeader().setReorderingAllowed(false);
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -290,86 +286,95 @@ public class TransactionPanel extends JPanel {
 
         return scrollPane;
     }
+
     private void calculateGrandTotal() {
 
         grandTotal = 0.0;
 
-        // Loop through every row in the table
         for (int i = 0; i < model.getRowCount(); i++) {
-
-            double total = Double.parseDouble(
-                    model.getValueAt(i, 3).toString()
-            );
-
+            double total = Double.parseDouble(model.getValueAt(i, 3).toString());
             grandTotal += total;
         }
 
-        // Update Total Label
-        totalLabel.setText(
-                String.format("Grand Total : Rs. %.2f", grandTotal)
-        );
+        totalLabel.setText(String.format("Grand Total : Rs. %.2f", grandTotal));
     }
+
     private void addItem() {
 
-        String product = productBox.getSelectedItem().toString();
+        if (productBox.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "Please select a product.");
+            return;
+        }
 
-        int qty = (Integer) qtySpinner.getValue();
+        try {
+            String product = productBox.getSelectedItem().toString();
+            int qty = (Integer) qtySpinner.getValue();
+            double price = Double.parseDouble(priceField.getText().trim());
 
-        double price = Double.parseDouble(priceField.getText());
+            if (price <= 0) {
+                JOptionPane.showMessageDialog(this, "Price must be greater than 0.");
+                return;
+            }
 
-        double total = qty * price;
+            double total = qty * price;
 
-        model.addRow(new Object[]{
-                product,
-                qty,
-                price,
-                total
-        });
+            model.addRow(new Object[]{
+                    product,
+                    qty,
+                    price,
+                    total
+            });
 
-        calculateGrandTotal();
+            calculateGrandTotal();
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Invalid price input. Please enter a valid number.",
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private void removeSelectedItem() {
+
+        int selectedRow = table.getSelectedRow();
+
+        if (selectedRow != -1) {
+            model.removeRow(selectedRow);
+            calculateGrandTotal();
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please select a row from the table to remove.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
+        }
     }
 
     private void clearBill() {
 
-        // Remove all rows from the table
         model.setRowCount(0);
 
-        // Reset Grand Total
+        grandTotal = 0.0;
         totalLabel.setText("Grand Total : Rs. 0.00");
 
-        // Reset input fields
         qtySpinner.setValue(1);
-        priceField.setText("");
+        priceField.setText("100");
 
-        // Select first category
         categoryBox.setSelectedIndex(0);
-
-        // Reload products for the selected category
         loadProducts();
 
-        // Select first product if available
         if (productBox.getItemCount() > 0) {
             productBox.setSelectedIndex(0);
         }
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Bill has been cleared successfully.",
-                "Clear Bill",
-                JOptionPane.INFORMATION_MESSAGE
-        );
     }
 
     private void generateReceipt() {
 
         if (model.getRowCount() == 0) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No items added to the bill!",
-                    "Empty Bill",
-                    JOptionPane.WARNING_MESSAGE
-            );
             return;
         }
 
@@ -384,16 +389,12 @@ public class TransactionPanel extends JPanel {
 
         receipt.append("------------------------------------\n");
 
-        double grandTotal = 0;
-
         for (int i = 0; i < model.getRowCount(); i++) {
 
             String product = model.getValueAt(i, 0).toString();
             int qty = Integer.parseInt(model.getValueAt(i, 1).toString());
             double price = Double.parseDouble(model.getValueAt(i, 2).toString());
             double total = Double.parseDouble(model.getValueAt(i, 3).toString());
-
-            grandTotal += total;
 
             receipt.append(String.format(
                     "%-15s %-5d %-10.2f %-10.2f\n",
@@ -421,16 +422,13 @@ public class TransactionPanel extends JPanel {
         );
     }
 
-    // ==========================
-    // Bottom Panel
-    // ==========================
     private JPanel createBottomPanel() {
 
-        JPanel panel = new JPanel(new BorderLayout(20,20));
+        JPanel panel = new JPanel(new BorderLayout(20, 20));
         panel.setBackground(Color.WHITE);
 
         totalLabel = new JLabel("Grand Total : Rs. 0.00");
-        totalLabel.setFont(new Font("Arial",Font.BOLD,28));
+        totalLabel.setFont(new Font("Arial", Font.BOLD, 28));
         totalLabel.setForeground(RED);
 
         panel.add(totalLabel, BorderLayout.WEST);
@@ -441,8 +439,8 @@ public class TransactionPanel extends JPanel {
         clearButton = new JButton("Clear Bill");
         receiptButton = new JButton("Generate Receipt");
 
-        clearButton.setPreferredSize(new Dimension(160,40));
-        receiptButton.setPreferredSize(new Dimension(190,40));
+        clearButton.setPreferredSize(new Dimension(160, 40));
+        receiptButton.setPreferredSize(new Dimension(190, 40));
 
         clearButton.setBackground(Color.GRAY);
         clearButton.setForeground(Color.WHITE);
