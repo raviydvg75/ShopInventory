@@ -34,7 +34,7 @@ public class SalesPanel extends JPanel {
     }
 
     public SalesPanel() {
-        this(null);
+        initUI();
     }
 
     private void initUI() {

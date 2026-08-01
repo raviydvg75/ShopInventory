@@ -271,8 +271,11 @@ public class Dashboard extends JFrame {
                 break;
 
             case "Sales":
-                centerPanel.add(new SalesPanel(), BorderLayout.CENTER);
-                break;
+                centerPanel.add(new SalesPanel(loggedInMerchant), BorderLayout.CENTER);
+                centerPanel.revalidate();
+                centerPanel.repaint();
+                return;
+
 
             case "Customers":
                 description.setText("Manage customers.");
@@ -291,8 +294,10 @@ public class Dashboard extends JFrame {
                 break;
 
             case "Help":
-                description.setText("Help and support.");
-                break;
+                centerPanel.add(new HelpPanel(), BorderLayout.CENTER);
+                centerPanel.revalidate();
+                centerPanel.repaint();
+                return;
         }
 
         JPanel content = new JPanel();
